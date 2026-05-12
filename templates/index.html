@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tool Bot</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <h1>Tool Bot</h1>
+
+    <!-- CHAT -->
+    <div id="chat-box">
+
+        <div class="bot-message">
+            Hallo! Ich bin Bennard.
+
+            {% if not name %}
+                Wie heißt du?
+            {% else %}
+                Willkommen zurück {{ name }}!
+                Welches Programm möchtest du starten?
+
+                - gehaltsrechner
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+
+        <input type="text" id="user-input" placeholder="Nachricht schreiben...">
+
+        <button onclick="sendMessage()">Senden</button>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<script>
+document.getElementById("user-input").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+</script>
+
+</body>
+</html>
