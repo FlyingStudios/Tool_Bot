@@ -24,6 +24,16 @@ body {
     overflow: hidden;
 }
 
+.bubble {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background-color: #2f2f2f;
+    color: white;
+    font-family: sans-serif;
+    margin: 5px;
+}
+
 /* HEADER */
 h1 {
     margin: 0;

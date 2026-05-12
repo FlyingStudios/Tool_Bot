@@ -7,9 +7,7 @@ async function sendMessage() {
 
     let chatBox = document.getElementById("chat-box")
 
-    // =========================
-    // USER MESSAGE (safe)
-    // =========================
+    // USER MESSAGE
     let userMsg = document.createElement("p")
     userMsg.className = "user-message"
     userMsg.textContent = message
@@ -17,46 +15,32 @@ async function sendMessage() {
 
     input.value = ""
 
-    // =========================
-    // LOADING MESSAGE
-    // =========================
-    let loadingMessage = document.createElement("p")
-    loadingMessage.className = "bot-message"
-    chatBox.appendChild(loadingMessage)
+    // THINKING START
+    const thinking = showThinking(chatBox)
 
-    const frames = ["...", "..", ".", ".."]
-    let index = 0
+    // REQUEST
+    let response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ message })
+    })
 
-    let animation = setInterval(() => {
-        loadingMessage.textContent = "Wird berechnet " + frames[index]
-        index = (index + 1) % frames.length
-    }, 400)
+    let data = await response.json()
 
-    try {
+    const delay = data.delay ?? 0
 
-        let response = await fetch("/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ message })
-        })
+    // WAIT + THEN SHOW ANSWER
+    setTimeout(() => {
 
-        if (!response.ok) {
-            throw new Error("Server Error")
-        }
+        clearInterval(thinking.interval)
+        thinking.bubble.remove()
 
-        let data = await response.json()
+        let botMsg = document.createElement("p")
+        botMsg.className = "bot-message"
+        botMsg.textContent = data.answer
+        chatBox.appendChild(botMsg)
 
-        clearInterval(animation)
-        loadingMessage.textContent = data.answer
+        chatBox.scrollTop = chatBox.scrollHeight
 
-    } catch (error) {
-
-        clearInterval(animation)
-        loadingMessage.textContent = "Fehler beim Verbinden mit dem Server."
-
-    }
-
-    chatBox.scrollTop = chatBox.scrollHeight
+    }, delay)
 }
