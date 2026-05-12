@@ -1,7 +1,14 @@
+import os
 from flask import Flask, render_template, request, jsonify, session
+from flask_session import Session
 
 app = Flask(__name__)
-app.secret_key = "test"
+
+app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+
+Session(app)
 
 # =========================
 # STATES
@@ -42,7 +49,7 @@ def chat():
     # =========================
     # NAME SPEICHERN
     # =========================
-    if "name" not in session:
+    if not session.get("name"):
 
         session["name"] = message
         session["state"] = STATE_MENU
@@ -122,5 +129,6 @@ def chat():
     return antwort("Fehler im System.")
 
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
